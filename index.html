@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DM Station — Quick Tools for DMs</title>
-  <meta name="description" content="One‑stop quick tools for D&D DMs: names, shops, loot, and keyword rules search.">
+  <meta name="description" content="One-stop quick tools for D&D DMs: names, shops, loot, and rules search.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
 
   <main class="layout">
     <section class="panel" id="names">
-      <h2>Race & Sex‑based Name Generator</h2>
+      <h2>Race & Sex-based Name Generator</h2>
       <div class="controls">
         <label>Race
           <select id="name-ancestry">
@@ -105,8 +105,14 @@
     </section>
 
     <section class="panel" id="search">
-      <h2>Rules & Features Search (SRD 5.1)</h2>
+      <h2>Rules & Features Search (SRD)</h2>
       <div class="controls">
+        <label>Ruleset
+          <select id="ruleset">
+            <option value="2014">5e 2014 (SRD 5.1)</option>
+            <option value="2024">5e 2024 (SRD 5.2.1)</option>
+          </select>
+        </label>
         <label>Keyword
           <input id="search-query" type="text" placeholder="bless, grapple, darkvision...">
         </label>
@@ -123,7 +129,7 @@
         <button class="secondary" id="btn-clear-search">Clear</button>
       </div>
       <div id="search-results" class="cards" aria-live="polite"></div>
-      <p class="hint">This starter includes a tiny sample of SRD data. You can import the full SRD JSON later (see README).</p>
+      <p class="hint">Choose a ruleset first. 2014 uses live Open5e; 2024 loads a local JSON you can replace.</p>
     </section>
 
     <aside class="pinboard">
@@ -139,7 +145,7 @@
   </main>
 
   <footer class="footer">
-    <small>© 2025 DM Station • SRD content (sample) is © Wizards of the Coast and licensed under CC BY 4.0. See <a href="legal.html">Legal</a>.</small>
+    <small>© 2025 DM Station • SRD content is © Wizards of the Coast and licensed under CC BY 4.0. See <a href="legal.html">Legal</a>.</small>
   </footer>
 
   <script src="app.js"></script>

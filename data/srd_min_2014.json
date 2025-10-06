@@ -1,0 +1,30 @@
+{
+  "spells": [
+    {
+      "type": "spell",
+      "name": "Bless",
+      "text": "(2014 sample)"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "condition",
+      "name": "Grappled",
+      "text": "(2014 sample)"
+    }
+  ],
+  "equipment": [
+    {
+      "type": "equipment",
+      "name": "Longsword",
+      "text": "(2014 sample)"
+    }
+  ],
+  "rules": [
+    {
+      "type": "rule",
+      "name": "Darkvision",
+      "text": "(2014 sample)"
+    }
+  ]
+}
