@@ -1,82 +1,30 @@
 {
   "spells": [
     {
-      "id": "spell_bless",
       "type": "spell",
       "name": "Bless",
-      "level": 1,
-      "school": "Enchantment",
-      "casting_time": "1 action",
-      "range": "30 feet",
-      "components": "V, S, M (a sprinkling of holy water)",
-      "duration": "Concentration, up to 1 minute",
-      "text": "You bless up to three creatures of your choice within range... (SRD excerpt, truncated in sample)."
-    },
-    {
-      "id": "spell_fire_bolt",
-      "type": "spell",
-      "name": "Fire Bolt",
-      "level": 0,
-      "school": "Evocation",
-      "casting_time": "1 action",
-      "range": "120 feet",
-      "components": "V, S",
-      "duration": "Instantaneous",
-      "text": "You hurl a mote of fire at a creature or object within range... (SRD excerpt, sample)."
-    },
-    {
-      "id": "spell_cure_wounds",
-      "type": "spell",
-      "name": "Cure Wounds",
-      "level": 1,
-      "school": "Evocation",
-      "casting_time": "1 action",
-      "range": "Touch",
-      "components": "V, S",
-      "duration": "Instantaneous",
-      "text": "A creature you touch regains a number of hit points equal to 1d8 + your spellcasting ability modifier..."
+      "text": "(sample)"
     }
   ],
   "conditions": [
     {
-      "id": "cond_grappled",
       "type": "condition",
       "name": "Grappled",
-      "text": "A grappled creature’s speed becomes 0, and it can’t benefit from any bonus to its speed... (sample)."
-    },
-    {
-      "id": "cond_blinded",
-      "type": "condition",
-      "name": "Blinded",
-      "text": "A blinded creature can’t see and automatically fails any ability check that requires sight... (sample)."
+      "text": "(sample)"
     }
   ],
   "equipment": [
     {
-      "id": "eq_long_sword",
       "type": "equipment",
       "name": "Longsword",
-      "text": "Martial melee weapon. 1d8 slashing (versatile 1d10). (sample)."
-    },
-    {
-      "id": "eq_healers_kit",
-      "type": "equipment",
-      "name": "Healer's Kit",
-      "text": "This kit is a leather pouch containing bandages, salves, and splints... (sample)."
+      "text": "(sample)"
     }
   ],
   "rules": [
     {
-      "id": "rule_darkvision",
       "type": "rule",
       "name": "Darkvision",
-      "text": "Many creatures have darkvision and can see in dim light as if it were bright light... (sample)."
-    },
-    {
-      "id": "rule_concentration",
-      "type": "rule",
-      "name": "Concentration",
-      "text": "Some spells require you to maintain concentration to keep their magic active... (sample)."
+      "text": "(sample)"
     }
   ]
 }

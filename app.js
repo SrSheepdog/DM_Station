@@ -1,152 +1,49 @@
-// App with ruleset switch (2014 via Open5e, 2024 via local JSON)
+// Minimal logic with NPCs, Encounter, Quest, and Search
+function rng(seed){if(seed===undefined||seed===null||seed==='')return Math.random;let s=0;String(seed).split('').forEach(c=>s=(s*31+c.charCodeAt(0))>>>0);return function(){var t=(s+=0x6D2B79F5);t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
+function choice(a,r=Math.random){return a[Math.floor(r()*a.length)]}function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
+const NAMES={human:{any:{p:["Al","Bel","Ca","Dan","El","Fi","Jo","Ka","Li","Mo"],r:["na","bel","ra","ri","la","mi"],s:["an","en","ra","na","lia","lyn"]}},elf:{any:{p:["Ae","Ela","Ila","Lae","Syl","Va"],r:["lë","rian","thir","van","reth"],s:["iel","ion","wen","eth","or"]}},dwarf:{any:{p:["Bal","Dor","Kar","Mor","Tor"],r:["gra","drum","kil","rak"],s:["din","da","gorn","hild"]}},halfling:{any:{p:["Ari","Beri","Cade","Dillo","Meri","Milo"],r:["bun","hill","vale","wick"],s:["foot","top","vale","wick","will"]}},dragonborn:{any:{p:["Akra","Arj","Biri","Don","Ghesh","Kriv"],r:["ash","kyr","rhas","thys","zys"],s:["ar","ir","ys","ith","an"]}},tiefling:{any:{p:["Aby","Bel","Cri","Da","Eri","Luc","Mor"],r:["zor","vash","xar","zra","zar","nys"],s:["a","is","on","or","ys","el"]}}};
+function genNames(anc,sex,style,count,seed){const r=rng(seed);const set=(NAMES[anc]||NAMES.human).any;const out=[];for(let i=0;i<count;i++){out.push(choice(set.p,r)+choice(set.r,r)+choice(set.s,r))}return out}
+function genShop(type='tavern',seed=null){const r=rng(seed);const pat=choice(["The {adj} {beast}","The {color} {object}","{surname}'s {place}"],r);const lex={adj:["Sly","Crimson","Copper","Whispering"],beast:["Chimera","Stag","Kraken","Raven"],color:["Black","Green","Golden"],object:["Lantern","Tankard","Anvil","Moon"],surname:["Cole","Rook","Thorne","Highmoor"],place:["Inn","Rest","Hearth","Table"]};const name=pat.replace("{adj}",choice(lex.adj,r)).replace("{beast}",choice(lex.beast,r)).replace("{color}",choice(lex.color,r)).replace("{object}",choice(lex.object,r)).replace("{surname}",choice(lex.surname,r)).replace("{place}",choice(lex.place,r));const sign=`Sign: ${choice(["Faded","Carved","Painted"],r)} ${choice(["symbol","crest"],r)} of a ${choice(["stag","chimera","key","moon"],r)}.`;const owner=`Owner: ${choice(["Mirna \"Cinder\" Cole","Old Rook Merriweather","Tess Bracken"],r)}.`;const price=`Price Tier: ${choice(["$","$$","$$$"],r)}`;const rumor=`Rumor: ${choice(["a sunken bell","smugglers under the docks","a ghost on the road"],r)}.`;return `Name: ${name}\n${sign}\n${owner}\n${price}\n${rumor}`;}
+function genLoot(l=3,f="medium",seed=null){const r=rng(seed);const gp=Math.floor(r()*100)+50;const sp=Math.floor(r()*200);const cons=["potion of healing","antitoxin","smoke vial"];const roll=Math.floor(r()*20)+1;const magic=roll<(f==="high"?12:f==="low"?5:8)?["bag of holding"]:[];const parts=[`Coins: ${gp} gp, ${sp} sp`,`Consumables: ${choice(cons,r)}`];if(magic.length)parts.push(`Magic: ${magic.join(", ")}`);return parts.join("\n")}
+const NPC={anc:["Human","Elf","Dwarf","Halfling","Dragonborn","Tiefling","Gnome","Half-Orc"],job:["Innkeeper","Guard","Merchant","Blacksmith","Healer","Scholar","Hunter","Smuggler","Sailor","Alchemist","Priest","Carpenter"],per:["cheerful","stoic","snarky","nervous","stern","curious","world-weary","pious","sarcastic","blunt"],quirk:["collects buttons","hums sea shanties","avoids eye contact","writes everything down","feeds stray cats","mispronounces names","always offers tea","superstitious about the moon"],goal:["pay off a secret debt","win a local contest","reopen the old mill","find a missing sibling","protect a relic","start a caravan","cure a strange illness","expose a corrupt official"],look:["ink-stained fingers","braided beard","scar across one cheek","elaborate tattoos","singed sleeves","fine boots","patched cloak","silver amulet"],line:[\"You're not from around here, are you?\",\"Between you and me, the well runs deeper than folks think.\",\"Coin first, questions later.\",\"I saw lights in the ruin last night.\"]};
+function genNPCs(anc="any",job="any",count=3,seed=null){const r=rng(seed);const pick=a=>choice(a,r);const out=[];for(let i=0;i<count;i++){const A=anc==="any"?pick(NPC.anc):anc[0].toUpperCase()+anc.slice(1);const J=job==="any"?pick(NPC.job):job;const name=genNames(A.toLowerCase(),"any","default",1,Math.floor(r()*1e6))[0];out.push(`Name: ${name} (${A} ${J})\nPersonality: ${pick(NPC.per)}; Quirk: ${pick(NPC.quirk)}\nGoal: ${pick(NPC.goal)}\nAppearance: ${pick(NPC.look)}\nLine: ${pick(NPC.line)}`)}return out.join("\n\n")}
+let MON=null;async function loadMon(){if(MON) return MON; const r=await fetch('data/monsters.json'); MON=await r.json(); return MON;}
+function budget(size,level,diff){const per={easy:50,medium:75,hard:100,deadly:125}[diff]||75;return size*level*per}
+function filterMon(list,f){if(!f||f==='any')return list.slice();return list.filter(m=>m.type===f)}
+function buildEncounter(list,b){const pool=list.slice().sort((a,b)=>a.xp-b.xp);const out=[];let xp=0;const maxN=b<300?3:6;while(out.length<maxN&&xp<b){let pickIdx=-1;for(let i=pool.length-1;i>=0;i--){if(xp+pool[i].xp<=b){pickIdx=i;break}}if(pickIdx===-1){pickIdx=0}out.push(pool[pickIdx]);xp+=pool[pickIdx].xp}return {monsters:out,totalXP:xp}}
+function renderCards(items){return items.map(e=>`<div class='card'><div class='badge'>${e.type}</div><h4>${e.title}</h4><p>${e.body}</p></div>`).join('')}
+let SRD=null;async function loadSRD(){if(SRD) return SRD; const r=await fetch('data/srd_min.json'); const d=await r.json(); const pack=[];(d.spells||[]).forEach(s=>pack.push({type:'spell',title:s.name||s.title,body:s.text||s.body||''}));(d.conditions||[]).forEach(c=>pack.push({type:'condition',title:c.name||c.title,body:c.text||c.body||''}));(d.rules||[]).forEach(r=>pack.push({type:'rule',title:r.name||r.title,body:r.text||r.body||''}));(d.equipment||[]).forEach(e=>pack.push({type:'equipment',title:e.name||e.title,body:e.text||e.body||''})); SRD=pack; return SRD;}
+window.addEventListener('DOMContentLoaded',()=>{
+document.getElementById('btn-generate-names').addEventListener('click',()=>{const anc=document.getElementById('name-ancestry').value;const sex=document.getElementById('name-sex').value;const style=document.getElementById('name-style').value;const count=clamp(parseInt(document.getElementById('name-count').value||'5',10),1,50);const seed=document.getElementById('name-seed').value;document.getElementById('names-output').textContent=genNames(anc,sex,style,count,seed).join('\n')})
+document.getElementById('btn-copy-names').addEventListener('click',()=>{const t=document.getElementById('names-output').textContent||'';if(t)navigator.clipboard.writeText(t)})
+document.getElementById('btn-pin-names').addEventListener('click',()=>{const t=document.getElementById('names-output').textContent||'';if(t)pin('Names',t)})
 
-function seededRandom(seed){ if(seed===undefined||seed===null||seed==="") return Math.random;
-  let s = 0; const str = String(seed); for(let i=0;i<str.length;i++) s = (s*31 + str.charCodeAt(i)) >>> 0;
-  return function(){ var t = (s += 0x6D2B79F5); t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
-}
-function choice(arr,rng=Math.random){ return arr[Math.floor(rng()*arr.length)]; }
-function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+document.getElementById('btn-generate-shop').addEventListener('click',()=>{document.getElementById('shop-output').textContent=genShop(document.getElementById('shop-type').value)})
+document.getElementById('btn-copy-shop').addEventListener('click',()=>{const t=document.getElementById('shop-output').textContent||'';if(t)navigator.clipboard.writeText(t)})
+document.getElementById('btn-pin-shop').addEventListener('click',()=>{const t=document.getElementById('shop-output').textContent||'';if(t)pin('Shop',t)})
 
-const NAME_TEMPLATES = {
-  human:{ any:{ prefix:["Al","Bel","Ca","Dan","El","Fi","Jo","Ka","Li","Mo"], root:["na","bel","ra","ri","la","mi"], suffix:["an","en","ra","na","lia","lyn"] } },
-  elf:{ any:{ prefix:["Ae","Ela","Ila","Lae","Syl","Va"], root:["lë","rian","thir","van","reth"], suffix:["iel","ion","wen","eth","or"] } },
-  dwarf:{ any:{ prefix:["Bal","Dor","Kar","Mor","Tor"], root:["gra","drum","kil","rak"], suffix:["din","da","gorn","hild"] } },
-  halfling:{ any:{ prefix:["Ari","Beri","Cade","Dillo","Meri","Milo"], root:["bun","hill","vale","wick"], suffix:["foot","top","vale","wick","will"] } },
-  dragonborn:{ any:{ prefix:["Akra","Arj","Biri","Don","Ghesh","Kriv"], root:["ash","kyr","rhas","thys","zys"], suffix:["ar","ir","ys","ith","an"] } },
-  tiefling:{ any:{ prefix:["Aby","Bel","Cri","Da","Eri","Luc","Mor"], root:["zor","vash","xar","zra","zar","nys"], suffix:["a","is","on","or","ys","el"] } }
-};
-function generateName(ancestry,sex="any",style="default",count=5,seed=null){
-  const rng = seededRandom(seed); const set = (NAME_TEMPLATES[ancestry]||NAME_TEMPLATES.human).any;
-  const names=[]; for(let i=0;i<count;i++){ names.push(choice(set.prefix,rng)+choice(set.root,rng)+choice(set.suffix,rng)); } return names;
-}
+document.getElementById('btn-generate-loot').addEventListener('click',()=>{const lvl=clamp(parseInt(document.getElementById('loot-level').value||'3',10),1,20);const freq=document.getElementById('loot-magic').value;document.getElementById('loot-output').textContent=genLoot(lvl,freq)})
+document.getElementById('btn-copy-loot').addEventListener('click',()=>{const t=document.getElementById('loot-output').textContent||'';if(t)navigator.clipboard.writeText(t)})
+document.getElementById('btn-pin-loot').addEventListener('click',()=>{const t=document.getElementById('loot-output').textContent||'';if(t)pin('Loot',t)})
 
-function generateShop(type="tavern", seed=null){
-  const rng = seededRandom(seed);
-  const patterns = ["The {adj} {beast}","The {color} {object}","{surname}'s {place}"];
-  const lex = { adj:["Sly","Crimson","Copper","Whispering"], beast:["Chimera","Stag","Kraken","Raven"],
-    color:["Black","Green","Golden"], object:["Lantern","Tankard","Anvil","Moon"],
-    surname:["Cole","Rook","Thorne","Highmoor"], place:["Inn","Rest","Hearth","Table"] };
-  const pat = choice(patterns,rng);
-  const name = pat.replace("{adj}",choice(lex.adj,rng)).replace("{beast}",choice(lex.beast,rng))
-                  .replace("{color}",choice(lex.color,rng)).replace("{object}",choice(lex.object,rng))
-                  .replace("{surname}",choice(lex.surname,rng)).replace("{place}",choice(lex.place,rng));
-  const sign = `Sign: ${choice(["Faded","Carved","Painted"],rng)} ${choice(["symbol","crest"],rng)} of a ${choice(["stag","chimera","key","moon"],rng)}.`;
-  const owner = `Owner: ${choice(["Mirna \"Cinder\" Cole","Old Rook Merriweather","Tess Bracken"],rng)}.`;
-  const price = `Price Tier: ${choice(["$","$$","$$$"],rng)}`;
-  const rumor = `Rumor: ${choice(["a sunken bell","smugglers under the docks","a ghost on the road"],rng)}.`;
-  return `Name: ${name}\n${sign}\n${owner}\n${price}\n${rumor}`;
-}
+document.getElementById('btn-generate-npc').addEventListener('click',()=>{const anc=document.getElementById('npc-ancestry').value;const job=document.getElementById('npc-occupation').value;const n=clamp(parseInt(document.getElementById('npc-count').value||'3',10),1,20);document.getElementById('npc-output').textContent=genNPCs(anc,job,n)})
+document.getElementById('btn-copy-npc').addEventListener('click',()=>{const t=document.getElementById('npc-output').textContent||'';if(t)navigator.clipboard.writeText(t)})
+document.getElementById('btn-pin-npc').addEventListener('click',()=>{const t=document.getElementById('npc-output').textContent||'';if(t)pin('NPCs',t)})
 
-function generateLoot(avgLevel=3, magicFreq="medium", seed=null){
-  const rng = seededRandom(seed);
-  const coinsGp = Math.floor(rng()*100)+50; const coinsSp = Math.floor(rng()*200);
-  const consumables = ["potion of healing","antitoxin","smoke vial"];
-  const magicRoll = Math.floor(rng()*20)+1; const magic = magicRoll < (magicFreq==="high"?12:magicFreq==="low"?5:8) ? ["bag of holding"] : [];
-  const parts = [`Coins: ${coinsGp} gp, ${coinsSp} sp`,`Consumables: ${choice(consumables,rng)}`];
-  if (magic.length) parts.push(`Magic: ${magic.join(", ")}`);
-  return parts.join("\n");
-}
+document.getElementById('btn-build-encounter').addEventListener('click',async()=>{const size=clamp(parseInt(document.getElementById('enc-party-size').value||'4',10),1,8);const lvl=clamp(parseInt(document.getElementById('enc-party-level').value||'3',10),1,20);const diff=document.getElementById('enc-difficulty').value;const filt=document.getElementById('enc-filter').value;const mons=filterMon(await loadMon(),filt);const b=budget(size,lvl,diff);const res=buildEncounter(mons,b);const lines=res.monsters.map(m=>`- ${m.name} (CR ${m.cr}, ${m.xp} XP)`);document.getElementById('encounter-output').textContent=`Target XP ≈ ${b}\n${lines.join('\n')}\nTotal XP: ${res.totalXP}`})
+document.getElementById('btn-copy-encounter').addEventListener('click',()=>{const t=document.getElementById('encounter-output').textContent||'';if(t)navigator.clipboard.writeText(t)})
+document.getElementById('btn-pin-encounter').addEventListener('click',()=>{const t=document.getElementById('encounter-output').textContent||'';if(t)pin('Encounter',t)})
 
-// -------- SRD loader with ruleset switch --------
-let SRD_CACHE = { "2014": null, "2024": null };
+document.getElementById('btn-generate-quest').addEventListener('click',()=>{const tone=document.getElementById('quest-tone').value;const theme=document.getElementById('quest-theme').value;const hooks=genQuests(tone,theme,3);document.getElementById('quest-output').textContent=hooks.join('\n\n')})
+document.getElementById('btn-copy-quest').addEventListener('click',()=>{const t=document.getElementById('quest-output').textContent||'';if(t)navigator.clipboard.writeText(t)})
+document.getElementById('btn-pin-quest').addEventListener('click',()=>{const t=document.getElementById('quest-output').textContent||'';if(t)pin('Quest',t)})
 
-async function fetchAllPages(url){
-  const out=[]; while(url){ const r=await fetch(url); if(!r.ok) throw new Error(`Fetch failed: ${r.status}`);
-    const d=await r.json(); if (Array.isArray(d)) { out.push(...d); break; } if (d.results) out.push(...d.results); url=d.next||null; }
-  return out;
-}
-
-async function loadSRD2014(){
-  const base = "https://api.open5e.com";
-  try {
-    const [spells, conditions, sections] = await Promise.all([
-      fetchAllPages(`${base}/v2/spells/?document__key=5esrd&limit=200`),
-      fetchAllPages(`${base}/v2/conditions/?document__key=5esrd&limit=200`),
-      fetchAllPages(`${base}/v1/sections/?document__slug=5esrd&limit=200`)
-    ]);
-    const pack = [];
-    spells.forEach(s=>{
-      const level = (s.level ?? s.level_int ?? '').toString();
-      const school = (s.school && (s.school.name || s.school)) || '';
-      const text = [s.desc, s.higher_level, s.range_text, s.duration, s.components, s.casting_time].filter(Boolean).join('\n\n');
-      pack.push({ type:'spell', title:s.name, body:`Level ${level} ${school}\n\n${text}`, url:s.url||'' });
-    });
-    conditions.forEach(c=>{ const text = [c.desc, c.notes].filter(Boolean).join('\n\n'); pack.push({ type:'condition', title:c.name||c.title, body:text, url:c.url||'' }); });
-    sections.forEach(sec=>{ const title = sec.name||sec.title||'Rules'; const text = [sec.desc, sec.text].filter(Boolean).join('\n\n'); pack.push({ type:'rule', title, body:text, url:sec.url||'' }); });
-    return pack;
-  } catch (e) {
-    console.warn("Open5e 2014 fetch failed; using local sample", e);
-    const res = await fetch('data/srd_min_2014.json'); const d = await res.json();
-    const pack=[];
-    (d.spells||[]).forEach(s=>pack.push({type:'spell', title:s.name||s.title||'Spell', body:s.text||s.body||'', url:''}));
-    (d.conditions||[]).forEach(c=>pack.push({type:'condition', title:c.name||c.title||'Condition', body:c.text||c.body||'', url:''}));
-    (d.rules||[]).forEach(r=>pack.push({type:'rule', title:r.name||r.title||'Rule', body:r.text||r.body||'', url:''}));
-    (d.equipment||[]).forEach(e=>pack.push({type:'equipment', title:e.name||e.title||'Equipment', body:e.text||e.body||'', url:''}));
-    return pack;
-  }
-}
-
-async function loadSRD2024(){
-  const res = await fetch('data/srd_2024.json');
-  const d = await res.json();
-  const pack=[];
-  (d.spells||[]).forEach(s=>pack.push({type:'spell', title:s.title||s.name, body:s.body||s.text||'', url:s.url||''}));
-  (d.conditions||[]).forEach(c=>pack.push({type:'condition', title:c.title||c.name, body:c.body||c.text||'', url:c.url||''}));
-  (d.rules||[]).forEach(r=>pack.push({type:'rule', title:r.title||r.name, body:r.body||r.text||'', url:r.url||''}));
-  (d.equipment||[]).forEach(e=>pack.push({type:'equipment', title:e.title||e.name, body:e.body||e.text||'', url:e.url||''}));
-  return pack;
-}
-
-async function loadSRD(ruleset){
-  if (SRD_CACHE[ruleset]) return SRD_CACHE[ruleset];
-  SRD_CACHE[ruleset] = ruleset === "2024" ? await loadSRD2024() : await loadSRD2014();
-  return SRD_CACHE[ruleset];
-}
-
-function renderCard(e){
-  const safe = (s)=> String(s||"").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  return `<div class="card"><div class="badge">${safe(e.type)}</div><h4>${safe(e.title)}</h4><p>${safe(e.body)}</p></div>`;
-}
-
-async function doSearch(){
-  const ruleset = document.getElementById("ruleset").value;
-  const type = document.getElementById("search-type").value;
-  const q = (document.getElementById("search-query").value||"").trim().toLowerCase();
-  const data = await loadSRD(ruleset);
-  const filtered = data.filter(e => (type==="any" || e.type===type) && (e.title.toLowerCase().includes(q) || e.body.toLowerCase().includes(q)));
-  document.getElementById("search-results").innerHTML = filtered.slice(0, 100).map(renderCard).join("");
-}
-
-// Pinboard & wiring
-const PIN_KEY = "dmstation_pins_v2";
-function loadPins(){ try{return JSON.parse(localStorage.getItem(PIN_KEY)||"[]")}catch{return[]} }
-function savePins(p){ localStorage.setItem(PIN_KEY, JSON.stringify(p)); }
-function renderPins(){ const host=document.getElementById("pinboard-content"); const pins=loadPins(); host.innerHTML=""; for(const p of pins){ const d=document.createElement("div"); d.className="pin"; d.innerHTML=`<div class="badge">${p.kind}</div><pre>${p.text}</pre>`; host.appendChild(d);} }
-function makePin(kind,text){ const pins=loadPins(); pins.unshift({kind,text,at:Date.now()}); savePins(pins); renderPins(); }
-
-window.addEventListener("DOMContentLoaded", ()=>{
-  document.getElementById("btn-generate-names").addEventListener("click", ()=>{
-    const anc=document.getElementById("name-ancestry").value, sex=document.getElementById("name-sex").value, style=document.getElementById("name-style").value;
-    const count = clamp(parseInt(document.getElementById("name-count").value||"5",10),1,50); const seed=document.getElementById("name-seed").value;
-    document.getElementById("names-output").textContent = generateName(anc,sex,style,count,seed).join("\n");
-  });
-  document.getElementById("btn-copy-names").addEventListener("click", ()=>{ const t=document.getElementById("names-output").textContent||""; if(t) navigator.clipboard.writeText(t); });
-  document.getElementById("btn-pin-names").addEventListener("click", ()=>{ const t=document.getElementById("names-output").textContent||""; if(t) makePin("Names",t); });
-
-  document.getElementById("btn-generate-shop").addEventListener("click", ()=>{ document.getElementById("shop-output").textContent = generateShop(document.getElementById("shop-type").value); });
-  document.getElementById("btn-copy-shop").addEventListener("click", ()=>{ const t=document.getElementById("shop-output").textContent||""; if(t) navigator.clipboard.writeText(t); });
-  document.getElementById("btn-pin-shop").addEventListener("click", ()=>{ const t=document.getElementById("shop-output").textContent||""; if(t) makePin("Shop",t); });
-
-  document.getElementById("btn-generate-loot").addEventListener("click", ()=>{
-    const lvl=clamp(parseInt(document.getElementById("loot-level").value||"3",10),1,20);
-    const freq=document.getElementById("loot-magic").value;
-    document.getElementById("loot-output").textContent = generateLoot(lvl,freq);
-  });
-  document.getElementById("btn-copy-loot").addEventListener("click", ()=>{ const t=document.getElementById("loot-output").textContent||""; if(t) navigator.clipboard.writeText(t); });
-  document.getElementById("btn-pin-loot").addEventListener("click", ()=>{ const t=document.getElementById("loot-output").textContent||""; if(t) makePin("Loot",t); });
-
-  document.getElementById("btn-search").addEventListener("click", doSearch);
-  document.getElementById("btn-clear-search").addEventListener("click", ()=>{ document.getElementById("search-query").value=""; document.getElementById("search-results").innerHTML=""; });
-
-  renderPins();
-});
+document.getElementById('btn-search').addEventListener('click',async()=>{const q=(document.getElementById('search-query').value||'').toLowerCase().trim();const type=document.getElementById('search-type').value;const data=await loadSRD();const filtered=data.filter(e=>(type==='any'||e.type===type)&&(e.title.toLowerCase().includes(q)||e.body.toLowerCase().includes(q)));document.getElementById('search-results').innerHTML=filtered.slice(0,100).map(e=>`<div class='card'><div class='badge'>${e.type}</div><h4>${e.title}</h4><p>${e.body}</p></div>`).join('')})
+document.getElementById('btn-clear-search').addEventListener('click',()=>{document.getElementById('search-query').value='';document.getElementById('search-results').innerHTML=''})
+renderPins();
+})
+// Quest hooks
+function genQuests(tone='any',theme='any',n=3){const tones= tone==='any'?['Heroic','Grim','Whimsical','Mysterious']:[tone];const themes= theme==='any'?['Undead','Political','Heist','Wilderness','Arcane']:[theme];const who=['a desperate priest','a wounded messenger','a retired adventurer','a suspicious noble','a frightened child','a cursed druid'];const task=['recover','deliver','destroy','protect','investigate','steal'];const thing=['a moonstone idol','encoded letters','a haunted blade','a map fragment','a sealed coffer','a lichbone ring'];const where=['beneath the old abbey','in the flooded caverns','at the city archives','within a dragon’s hoard','in the fogbound marsh','under the ruined keep'];const twist=['time is running out','someone on your side is a traitor','it awakens something worse','another faction is racing you','the item is a fake','the client is the true villain'];const out=[];for(let i=0;i<n;i++){out.push(`[${choice(tones)} • ${choice(themes)}] ${choice(who)} asks you to ${choice(task)} ${choice(thing)} ${choice(where)}, but ${choice(twist)}.`)}return out}
+// Pinboard
+const PIN_KEY='dmstation_pins_v3';function getPins(){try{return JSON.parse(localStorage.getItem(PIN_KEY)||'[]')}catch{return[]}}function savePins(p){localStorage.setItem(PIN_KEY,JSON.stringify(p))}function renderPins(){const host=document.getElementById('pinboard-content');const pins=getPins();host.innerHTML='';pins.forEach(p=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<div class='badge'>${p.kind}</div><pre>${p.text}</pre>`;host.appendChild(d)})}function pin(kind,text){const pins=getPins();pins.unshift({kind,text,at:Date.now()});savePins(pins);renderPins()}
+let SRD=null;async function loadSRD(){if(SRD) return SRD; const r=await fetch('data/srd_min.json'); const d=await r.json(); const pack=[];(d.spells||[]).forEach(s=>pack.push({type:'spell',title:s.name||s.title,body:s.text||s.body||''}));(d.conditions||[]).forEach(c=>pack.push({type:'condition',title:c.name||c.title,body:c.text||c.body||''}));(d.rules||[]).forEach(r=>pack.push({type:'rule',title:r.name||r.title,body:r.text||r.body||''}));(d.equipment||[]).forEach(e=>pack.push({type:'equipment',title:e.name||e.title,body:e.text||e.body||''})); SRD=pack; return SRD;}
