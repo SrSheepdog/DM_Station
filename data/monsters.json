@@ -10,6 +10,26 @@
     ]
   },
   {
+    "name": "Kobold",
+    "cr": "1/8",
+    "xp": 25,
+    "type": "humanoid",
+    "env": [
+      "cave",
+      "hills"
+    ]
+  },
+  {
+    "name": "Cultist",
+    "cr": "1/8",
+    "xp": 25,
+    "type": "humanoid",
+    "env": [
+      "urban",
+      "dungeon"
+    ]
+  },
+  {
     "name": "Goblin",
     "cr": "1/4",
     "xp": 50,
@@ -26,8 +46,9 @@
     "xp": 50,
     "type": "undead",
     "env": [
-      "dungeon",
-      "ruin"
+      "graveyard",
+      "ruin",
+      "dungeon"
     ]
   },
   {
@@ -38,6 +59,26 @@
     "env": [
       "forest",
       "hills"
+    ]
+  },
+  {
+    "name": "Zombie",
+    "cr": "1/4",
+    "xp": 50,
+    "type": "undead",
+    "env": [
+      "graveyard",
+      "dungeon"
+    ]
+  },
+  {
+    "name": "Giant Wolf Spider",
+    "cr": "1/4",
+    "xp": 50,
+    "type": "beast",
+    "env": [
+      "forest",
+      "cave"
     ]
   },
   {
@@ -52,13 +93,43 @@
     ]
   },
   {
-    "name": "Zombie",
-    "cr": "1/4",
-    "xp": 50,
-    "type": "undead",
+    "name": "Hobgoblin",
+    "cr": "1/2",
+    "xp": 100,
+    "type": "humanoid",
     "env": [
-      "graveyard",
-      "dungeon"
+      "road",
+      "fort"
+    ]
+  },
+  {
+    "name": "Giant Wasp",
+    "cr": "1/2",
+    "xp": 100,
+    "type": "beast",
+    "env": [
+      "forest",
+      "swamp"
+    ]
+  },
+  {
+    "name": "Bandit Captain",
+    "cr": "2",
+    "xp": 450,
+    "type": "humanoid",
+    "env": [
+      "urban",
+      "road"
+    ]
+  },
+  {
+    "name": "Gnoll",
+    "cr": "1/2",
+    "xp": 100,
+    "type": "humanoid",
+    "env": [
+      "savanna",
+      "hills"
     ]
   },
   {
@@ -70,6 +141,36 @@
       "forest",
       "cave",
       "swamp"
+    ]
+  },
+  {
+    "name": "Ghoul",
+    "cr": "1",
+    "xp": 200,
+    "type": "undead",
+    "env": [
+      "graveyard",
+      "ruin"
+    ]
+  },
+  {
+    "name": "Dire Wolf",
+    "cr": "1",
+    "xp": 200,
+    "type": "beast",
+    "env": [
+      "forest",
+      "hills"
+    ]
+  },
+  {
+    "name": "Bugbear",
+    "cr": "1",
+    "xp": 200,
+    "type": "humanoid",
+    "env": [
+      "cave",
+      "forest"
     ]
   },
   {
@@ -94,6 +195,26 @@
     ]
   },
   {
+    "name": "Manticore",
+    "cr": "3",
+    "xp": 700,
+    "type": "monstrosity",
+    "env": [
+      "hills",
+      "ruin"
+    ]
+  },
+  {
+    "name": "Minotaur",
+    "cr": "3",
+    "xp": 700,
+    "type": "monstrosity",
+    "env": [
+      "labyrinth",
+      "ruin"
+    ]
+  },
+  {
     "name": "Troll",
     "cr": "5",
     "xp": 1800,
@@ -105,6 +226,16 @@
     ]
   },
   {
+    "name": "Wyvern",
+    "cr": "6",
+    "xp": 2300,
+    "type": "dragon",
+    "env": [
+      "mountains",
+      "canyon"
+    ]
+  },
+  {
     "name": "Young White Dragon",
     "cr": "6",
     "xp": 2300,
@@ -113,6 +244,66 @@
       "mountains",
       "cave",
       "arctic"
+    ]
+  },
+  {
+    "name": "Vampire Spawn",
+    "cr": "5",
+    "xp": 1800,
+    "type": "undead",
+    "env": [
+      "city",
+      "castle"
+    ]
+  },
+  {
+    "name": "Wraith",
+    "cr": "5",
+    "xp": 1800,
+    "type": "undead",
+    "env": [
+      "ruin",
+      "dungeon"
+    ]
+  },
+  {
+    "name": "Stone Giant",
+    "cr": "7",
+    "xp": 2900,
+    "type": "giant",
+    "env": [
+      "mountains",
+      "cave"
+    ]
+  },
+  {
+    "name": "Young Black Dragon",
+    "cr": "7",
+    "xp": 2900,
+    "type": "dragon",
+    "env": [
+      "swamp",
+      "ruin"
+    ]
+  },
+  {
+    "name": "Frost Giant",
+    "cr": "8",
+    "xp": 3900,
+    "type": "giant",
+    "env": [
+      "tundra",
+      "mountains"
+    ]
+  },
+  {
+    "name": "Young Blue Dragon",
+    "cr": "9",
+    "xp": 5000,
+    "type": "dragon",
+    "env": [
+      "desert",
+      "canyon"
     ]
   }
 ]

@@ -13,12 +13,12 @@
       "body": "(2024 sample)"
     }
   ],
-  "equipment": [],
   "rules": [
     {
       "type": "rule",
       "title": "Weapon Mastery (2024)",
       "body": "(2024 sample)"
     }
-  ]
+  ],
+  "equipment": []
 }
