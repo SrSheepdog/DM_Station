@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DM Station — Quick Tools for DMs</title>
+  <meta name="description" content="One‑stop quick tools for D&D DMs: names, shops, loot, and keyword rules search.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/favicon.svg" alt="" width="24" height="24">
+      <h1>DM Station</h1>
+    </div>
+    <nav class="nav">
+      <a href="#names">Names</a>
+      <a href="#shops">Shops</a>
+      <a href="#loot">Loot</a>
+      <a href="#search">Rules Search</a>
+      <a href="legal.html">Legal</a>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <section class="panel" id="names">
+      <h2>Race & Sex‑based Name Generator</h2>
+      <div class="controls">
+        <label>Race
+          <select id="name-ancestry">
+            <option value="human">Human</option>
+            <option value="elf">Elf</option>
+            <option value="dwarf">Dwarf</option>
+            <option value="halfling">Halfling</option>
+            <option value="dragonborn">Dragonborn</option>
+            <option value="tiefling">Tiefling</option>
+          </select>
+        </label>
+        <label>Sex
+          <select id="name-sex">
+            <option value="any">Any</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select>
+        </label>
+        <label>Style
+          <select id="name-style">
+            <option value="default">Default</option>
+            <option value="noble">Noble</option>
+            <option value="rough">Rough</option>
+            <option value="mystic">Mystic</option>
+          </select>
+        </label>
+        <label>How many
+          <input id="name-count" type="number" min="1" max="50" value="5">
+        </label>
+        <label>Seed (optional)
+          <input id="name-seed" type="text" placeholder="e.g., 42">
+        </label>
+        <button id="btn-generate-names">Generate</button>
+        <button class="secondary" id="btn-copy-names">Copy</button>
+        <button class="secondary" id="btn-pin-names">Pin</button>
+      </div>
+      <pre class="output" id="names-output" aria-live="polite"></pre>
+    </section>
+
+    <section class="panel" id="shops">
+      <h2>Store / Tavern Name Generator</h2>
+      <div class="controls">
+        <label>Type
+          <select id="shop-type">
+            <option value="tavern">Tavern/Inn</option>
+            <option value="general">General Store</option>
+            <option value="blacksmith">Blacksmith</option>
+            <option value="alchemist">Alchemist</option>
+            <option value="magic">Magic Shop</option>
+          </select>
+        </label>
+        <button id="btn-generate-shop">Generate</button>
+        <button class="secondary" id="btn-copy-shop">Copy</button>
+        <button class="secondary" id="btn-pin-shop">Pin</button>
+      </div>
+      <pre class="output" id="shop-output" aria-live="polite"></pre>
+    </section>
+
+    <section class="panel" id="loot">
+      <h2>Loot Generator</h2>
+      <div class="controls">
+        <label>Party Level (avg)
+          <input id="loot-level" type="number" min="1" max="20" value="3">
+        </label>
+        <label>Magic Item Frequency
+          <select id="loot-magic">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </label>
+        <button id="btn-generate-loot">Generate</button>
+        <button class="secondary" id="btn-copy-loot">Copy</button>
+        <button class="secondary" id="btn-pin-loot">Pin</button>
+      </div>
+      <pre class="output" id="loot-output" aria-live="polite"></pre>
+    </section>
+
+    <section class="panel" id="search">
+      <h2>Rules & Features Search (SRD 5.1)</h2>
+      <div class="controls">
+        <label>Keyword
+          <input id="search-query" type="text" placeholder="bless, grapple, darkvision...">
+        </label>
+        <label>Type
+          <select id="search-type">
+            <option value="any">Any</option>
+            <option value="spell">Spell</option>
+            <option value="condition">Condition</option>
+            <option value="equipment">Equipment</option>
+            <option value="rule">General Rule</option>
+          </select>
+        </label>
+        <button id="btn-search">Search</button>
+        <button class="secondary" id="btn-clear-search">Clear</button>
+      </div>
+      <div id="search-results" class="cards" aria-live="polite"></div>
+      <p class="hint">This starter includes a tiny sample of SRD data. You can import the full SRD JSON later (see README).</p>
+    </section>
+
+    <aside class="pinboard">
+      <div class="pinboard-header">
+        <h3>Pinboard</h3>
+        <div>
+          <button class="secondary" id="btn-export-pinboard">Export</button>
+          <button class="secondary" id="btn-clear-pinboard">Clear</button>
+        </div>
+      </div>
+      <div id="pinboard-content"></div>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <small>© 2025 DM Station • SRD content (sample) is © Wizards of the Coast and licensed under CC BY 4.0. See <a href="legal.html">Legal</a>.</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
