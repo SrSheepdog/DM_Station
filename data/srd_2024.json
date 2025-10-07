@@ -1,0 +1,24 @@
+{
+  "spells": [
+    {
+      "type": "spell",
+      "title": "Guidance (2024)",
+      "body": "(2024 sample)"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "condition",
+      "title": "Grappled (2024)",
+      "body": "(2024 sample)"
+    }
+  ],
+  "rules": [
+    {
+      "type": "rule",
+      "title": "Weapon Mastery (2024)",
+      "body": "(2024 sample)"
+    }
+  ],
+  "equipment": []
+}

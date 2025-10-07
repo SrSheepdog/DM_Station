@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>DM Station — Fresh Install</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<header class="topbar"><div class="brand"><img src="assets/favicon.svg" width="24" height="24" alt=""/><h1>DM Station</h1></div>
+<nav class="nav"><a href="#names">Names</a><a href="#shops">Shops</a><a href="#loot">Loot</a><a href="#npc">NPCs</a><a href="#encounter">Encounter</a><a href="#quest">Quest</a><a href="#dice">Dice</a><a href="#search">Rules</a><a href="#notes">Notes</a><a href="legal.html">Legal</a></nav>
+</header>
+
+<main class="layout">
+<section class="panel" id="names"><h2>Race & Sex-based Name Generator</h2>
+  <div class="controls">
+    <label>Race<select id="name-ancestry"><option value="human">Human</option><option value="elf">Elf</option><option value="dwarf">Dwarf</option><option value="halfling">Halfling</option><option value="dragonborn">Dragonborn</option><option value="tiefling">Tiefling</option></select></label>
+    <label>Sex<select id="name-sex"><option value="any">Any</option><option value="female">Female</option><option value="male">Male</option></select></label>
+    <label>Style<select id="name-style"><option value="default">Default</option><option value="noble">Noble</option><option value="rough">Rough</option><option value="mystic">Mystic</option></select></label>
+    <label>How many<input id="name-count" type="number" min="1" max="50" value="5"/></label>
+    <label>Seed<input id="name-seed" type="text" placeholder="e.g., 42"/></label>
+    <button id="btn-generate-names">Generate</button><button class="secondary" id="btn-copy-names">Copy</button><button class="secondary" id="btn-pin-names">Pin</button>
+  </div>
+  <pre class="output" id="names-output"></pre>
+</section>
+
+<section class="panel" id="shops"><h2>Store / Tavern Name Generator</h2>
+  <div class="controls">
+    <label>Type<select id="shop-type"><option value="tavern">Tavern/Inn</option><option value="general">General Store</option><option value="blacksmith">Blacksmith</option><option value="alchemist">Alchemist</option><option value="magic">Magic Shop</option></select></label>
+    <button id="btn-generate-shop">Generate</button><button class="secondary" id="btn-copy-shop">Copy</button><button class="secondary" id="btn-pin-shop">Pin</button>
+  </div>
+  <pre class="output" id="shop-output"></pre>
+</section>
+
+<section class="panel" id="loot"><h2>Loot Generator</h2>
+  <div class="controls">
+    <label>Party Level<input id="loot-level" type="number" min="1" max="20" value="3"/></label>
+    <label>Magic Items<select id="loot-magic"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+    <button id="btn-generate-loot">Generate</button><button class="secondary" id="btn-copy-loot">Copy</button><button class="secondary" id="btn-pin-loot">Pin</button>
+  </div>
+  <div class="controls"><button class="secondary" id="btn-export-loot-roll20">Export: Roll20</button><button class="secondary" id="btn-export-loot-foundry">Export: Foundry</button></div>
+  <pre class="output" id="loot-output"></pre>
+</section>
+
+<section class="panel" id="npc"><h2>NPC Generator</h2>
+  <div class="controls">
+    <label>Ancestry<select id="npc-ancestry"><option value="any" selected>Any</option><option value="human">Human</option><option value="elf">Elf</option><option value="dwarf">Dwarf</option><option value="halfling">Halfling</option><option value="dragonborn">Dragonborn</option><option value="tiefling">Tiefling</option></select></label>
+    <label>Occupation<select id="npc-occupation"><option value="any" selected>Any</option><option>Innkeeper</option><option>Guard</option><option>Merchant</option><option>Blacksmith</option><option>Healer</option><option>Scholar</option><option>Hunter</option><option>Smuggler</option></select></label>
+    <label>How many<input id="npc-count" type="number" min="1" max="20" value="3"/></label>
+    <button id="btn-generate-npc">Generate</button><button class="secondary" id="btn-copy-npc">Copy</button><button class="secondary" id="btn-pin-npc">Pin</button>
+  </div>
+  <pre class="output" id="npc-output"></pre>
+</section>
+
+<section class="panel" id="encounter"><h2>Encounter Builder</h2>
+  <div class="controls">
+    <label>Party size<input id="enc-party-size" type="number" min="1" max="8" value="4"/></label>
+    <label>Avg level<input id="enc-party-level" type="number" min="1" max="20" value="3"/></label>
+    <label>Difficulty<select id="enc-difficulty"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option><option value="deadly">Deadly</option></select></label>
+    <label>Filter<select id="enc-filter"><option value="any">Any</option><option value="undead">Undead</option><option value="beast">Beast</option><option value="humanoid">Humanoid</option><option value="giant">Giant</option><option value="dragon">Dragon</option></select></label>
+    <button id="btn-build-encounter">Build</button><button class="secondary" id="btn-copy-encounter">Copy</button><button class="secondary" id="btn-pin-encounter">Pin</button>
+  </div>
+  <div class="small">Heuristic XP budget: easy≈50, medium≈75, hard≈100, deadly≈125 × level × party size.</div>
+  <div class="controls"><button class="secondary" id="btn-export-enc-roll20">Export: Roll20</button><button class="secondary" id="btn-export-enc-foundry">Export: Foundry</button></div>
+  <pre class="output" id="encounter-output"></pre>
+</section>
+
+<section class="panel" id="quest"><h2>Quest Hook Generator</h2>
+  <div class="controls">
+    <label>Tone<select id="quest-tone"><option value="any" selected>Any</option><option>Heroic</option><option>Grim</option><option>Whimsical</option><option>Mysterious</option></select></label>
+    <label>Theme<select id="quest-theme"><option value="any" selected>Any</option><option>Undead</option><option>Political</option><option>Heist</option><option>Wilderness</option><option>Arcane</option></select></label>
+    <button id="btn-generate-quest">Generate</button><button class="secondary" id="btn-copy-quest">Copy</button><button class="secondary" id="btn-pin-quest">Pin</button>
+  </div>
+  <pre class="output" id="quest-output"></pre>
+</section>
+
+<section class="panel" id="dice"><h2>Dice Roller</h2>
+  <div class="controls">
+    <label>Roll<input id="dice-input" type="text" placeholder="2d6+1, d20+5, 4d8-2"/></label>
+    <button id="btn-roll">Roll</button><button class="secondary" id="btn-clear-rolls">Clear</button>
+  </div>
+  <pre class="output" id="dice-output"></pre>
+</section>
+
+<section class="panel" id="search"><h2>Rules & Features Search</h2>
+  <div class="controls">
+    <label>Ruleset<select id="ruleset"><option value="2014">5e 2014 (SRD 5.1)</option><option value="2024">5e 2024 (SRD 5.2.1)</option></select></label>
+    <label>Keyword<input id="search-query" type="text" placeholder="bless, grapple, darkvision..."/></label>
+    <label>Type<select id="search-type"><option value="any">Any</option><option value="spell">Spell</option><option value="condition">Condition</option><option value="equipment">Equipment</option><option value="rule">General Rule</option></select></label>
+    <button id="btn-search">Search</button><button class="secondary" id="btn-clear-search">Clear</button>
+  </div>
+  <div id="search-results" class="cards"></div>
+  <p class="small">2014 pulls from Open5e (with local fallback); 2024 reads <code>data/srd_2024.json</code>.</p>
+</section>
+
+<section class="pinboard panel" id="notes"><h2>Session Notes & Export</h2>
+  <div class="controls">
+    <label>Add a note<input id="note-input" type="text" placeholder="Quick note for session log"/></label>
+    <button id="btn-add-note">Add Note</button><button class="secondary" id="btn-export-markdown">Export Session Log</button>
+  </div>
+  <div id="pinboard-content"></div>
+</section>
+</main>
+
+<footer class="footer"><small>© 2025 DM Station • SRD content © Wizards of the Coast (CC BY 4.0). See <a href="legal.html">Legal</a>.</small></footer>
+<script src="app.js?v=1"></script>
+</body></html>
