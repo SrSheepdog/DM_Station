@@ -3,22 +3,28 @@
     {
       "type": "spell",
       "title": "Guidance (2024)",
-      "body": "(2024 sample)"
+      "body": "2024 sample text"
     }
   ],
   "conditions": [
     {
       "type": "condition",
       "title": "Grappled (2024)",
-      "body": "(2024 sample)"
+      "body": "2024 sample text"
     }
   ],
   "rules": [
     {
       "type": "rule",
       "title": "Weapon Mastery (2024)",
-      "body": "(2024 sample)"
+      "body": "2024 sample text"
     }
   ],
-  "equipment": []
+  "equipment": [
+    {
+      "type": "equipment",
+      "title": "Longsword (2024)",
+      "body": "2024 sample text"
+    }
+  ]
 }

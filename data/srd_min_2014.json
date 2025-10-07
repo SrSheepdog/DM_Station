@@ -3,28 +3,28 @@
     {
       "type": "spell",
       "name": "Bless",
-      "text": "(2014 sample)"
+      "text": "2014 sample text"
     }
   ],
   "conditions": [
     {
       "type": "condition",
       "name": "Grappled",
-      "text": "(2014 sample)"
+      "text": "2014 sample text"
     }
   ],
   "equipment": [
     {
       "type": "equipment",
       "name": "Longsword",
-      "text": "(2014 sample)"
+      "text": "2014 sample text"
     }
   ],
   "rules": [
     {
       "type": "rule",
       "name": "Darkvision",
-      "text": "(2014 sample)"
+      "text": "2014 sample text"
     }
   ]
 }
